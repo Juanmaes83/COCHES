@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>COCHES — Motion Lab V0.4</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#e9e9e4;color:#111}.app{height:100vh;padding:16px}.stage{position:relative;height:calc(100vh - 112px);overflow:hidden;background:#f7f7f3;cursor:grab;touch-action:none;user-select:none}.stage.dragging{cursor:grabbing}.brand{position:absolute;top:26px;left:28px;z-index:80;font-size:11px;letter-spacing:.17em}.hint{position:absolute;right:28px;top:26px;z-index:80;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#777}.asset-status{position:absolute;right:28px;top:48px;z-index:80;font-size:10px;color:#777}.asset-status.ok{color:#16833d}.asset-status.bad{color:#b00020}.giant{position:absolute;left:50%;top:50%;translate:-50% -54%;font-size:min(44vw,560px);line-height:.75;font-weight:500;letter-spacing:-.08em;color:#0000000c;z-index:1;pointer-events:none;will-change:transform,opacity}.copy{position:absolute;top:12vh;left:5vw;width:280px;z-index:55;pointer-events:none;will-change:opacity,transform}.copy span{font-size:10px;letter-spacing:.12em;text-transform:uppercase}.copy h1{margin:13px 0 9px;font-size:clamp(28px,3vw,48px);line-height:.98;font-weight:500;letter-spacing:-.045em}.copy p{margin:0;font-size:12px;line-height:1.5;color:#666}.vehicle{position:absolute;left:50%;top:54%;width:min(48vw,720px);aspect-ratio:4/3;translate:-50% -50%;will-change:transform,opacity;pointer-events:none}.vehicle img{width:100%;height:100%;display:block;object-fit:contain;border-radius:2px;box-shadow:0 24px 55px rgba(0,0,0,.09);background:#fff}.tag{position:absolute;left:50%;bottom:-20px;translate:-50%;font-size:9px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:#777}.drag{position:absolute;left:50%;top:78%;z-index:72;width:70px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;translate:-50% -50%;background:#111;color:#fff;font-size:10px;pointer-events:none;transition:transform .12s ease}.stage.dragging .drag{transform:scale(.86)}.pager{position:absolute;bottom:26px;left:50%;translate:-50%;display:flex;gap:8px;z-index:72}.pager button{width:24px;height:2px;padding:0;border:0;background:#0002;cursor:pointer}.pager button.on{background:#111}.panel{height:80px;display:flex;align-items:center;justify-content:space-between;gap:20px}.read{font-size:10px;letter-spacing:.08em;text-transform:uppercase}.read strong{display:block;margin-top:4px;font-size:22px;font-weight:500;letter-spacing:-.04em}.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.actions button{padding:8px 10px;border:1px solid #bbb;background:transparent;font-size:10px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}.actions button.on{background:#111;color:#fff;border-color:#111}
+@media(max-width:760px){.app{padding:8px}.stage{height:calc(100vh - 134px)}.copy{top:7vh;left:20px;width:72vw}.copy p{display:none}.vehicle{width:88vw;top:57%}.giant{font-size:82vw}.drag{top:82%;width:56px}.hint,.asset-status{display:none}.panel{align-items:flex-start;padding-top:8px}.actions{max-width:72%}.actions button{padding:7px 8px}}
+</style>
+</head>
+<body>
+<div class="app">
+<section class="stage" id="stage">
+  <div class="brand"><b>COCHES</b> / MOTION LAB 04</div>
+  <div class="hint">Drag horizontally · six supplied references</div>
+  <div class="asset-status" id="assetStatus">Loading assets 0 / 6</div>
+  <div id="giants"></div><div id="copies"></div><div id="vehicles"></div>
+  <div class="drag" id="dragLabel">Drag</div><nav class="pager" id="pager"></nav>
+</section>
+<div class="panel"><div class="read">progress<strong id="read">0.000 / 5</strong></div><div class="actions"><button id="prev">Previous</button><button id="next">Next</button><button id="inertia" class="on">Inertia</button><button id="parallax" class="on">Parallax</button><button id="reset">Reset</button></div></div>
+</div>
+<script>
+const root='https://raw.githubusercontent.com/Juanmaes83/COCHES/feat/premium-motion-lab/public/assets/cars/';
+const slides=[
+ {mark:'01',model:'Reference 01',eyebrow:'Blue crossover',img:root+'car-01.webp'},
+ {mark:'02',model:'Reference 02',eyebrow:'Red performance',img:root+'car-02.webp'},
+ {mark:'03',model:'Reference 03',eyebrow:'White SUV',img:root+'car-03.webp'},
+ {mark:'04',model:'Reference 04',eyebrow:'Angular utility',img:root+'car-04.webp'},
+ {mark:'05',model:'Reference 05',eyebrow:'White roadster',img:root+'car-05.webp'},
+ {mark:'06',model:'Reference 06',eyebrow:'Black saloon',img:root+'car-06.webp'}
+];
+const max=slides.length-1,stage=document.getElementById('stage'),vs=document.getElementById('vehicles'),gs=document.getElementById('giants'),cs=document.getElementById('copies'),pager=document.getElementById('pager'),read=document.getElementById('read'),dragLabel=document.getElementById('dragLabel'),assetStatus=document.getElementById('assetStatus');
+let loaded=0,failed=0;
+function updateAssetStatus(){assetStatus.textContent=failed?('Asset error '+failed+' · loaded '+loaded+' / '+slides.length):('Assets loaded '+loaded+' / '+slides.length);assetStatus.className='asset-status '+(failed?'bad':loaded===slides.length?'ok':'')}
+slides.forEach((s,i)=>{const g=document.createElement('div');g.className='giant';g.textContent=s.mark;gs.appendChild(g);const c=document.createElement('div');c.className='copy';c.innerHTML='<span>'+s.eyebrow+'</span><h1>'+s.model+'</h1><p>Supplied reference · choreography state '+(i+1)+' of '+slides.length+'.</p>';cs.appendChild(c);const v=document.createElement('article');v.className='vehicle';const img=document.createElement('img');img.src=s.img;img.alt=s.model;img.draggable=false;img.onload=()=>{loaded++;updateAssetStatus()};img.onerror=()=>{failed++;updateAssetStatus()};v.appendChild(img);const tag=document.createElement('span');tag.className='tag';tag.textContent=s.model;v.appendChild(tag);vs.appendChild(v);const dot=document.createElement('button');dot.setAttribute('aria-label','Go to '+s.model);dot.onclick=()=>go(i);pager.appendChild(dot)});updateAssetStatus();
+const giants=[...gs.children],copies=[...cs.children],vehicles=[...vs.children],dots=[...pager.children];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),mix=(a,b,t)=>a+(b-a)*t,ease=t=>1-Math.pow(1-clamp(t,0,1),3);
+let p=0,drag=false,inertia=true,parallax=true,startX=0,startP=0,lastX=0,lastT=0,vel=0,raf=0;
+function pose(i){const seg=Math.min(max-1,Math.floor(clamp(p,0,max-.0001))),local=p-seg,e=ease(local);if(p>=max-.0001){if(i===max)return{x:0,y:0,s:1,r:0,o:1};return{x:-100,y:0,s:.82,r:0,o:0}}if(i===seg)return{x:mix(0,-82,e),y:parallax?mix(0,-18,e):0,s:mix(1,.84,e),r:parallax?mix(0,-1.2,e):0,o:mix(1,.12,e)};if(i===seg+1){const d=ease(clamp((local-.08)/.92,0,1));return{x:mix(84,0,d),y:parallax?mix(24,0,d):0,s:mix(.86,1,d),r:parallax?mix(1.4,0,d):0,o:mix(.15,1,d)};if(i<seg)return{x:-104,y:0,s:.82,r:0,o:0};return{x:104,y:0,s:.82,r:0,o:0}}
+function render(){const active=clamp(Math.round(p),0,max);read.textContent=p.toFixed(3)+' / '+max;slides.forEach((s,i)=>{const w=clamp(1-Math.abs(p-i),0,1);giants[i].style.opacity=w;giants[i].style.transform='translate3d('+((i-p)*-4)+'vw,0,0)';copies[i].style.opacity=w;copies[i].style.transform='translate3d(0,'+((1-w)*24)+'px,0)';const q=pose(i);vehicles[i].style.transform='translate3d(calc(-50% + '+q.x+'vw),calc(-50% + '+q.y+'px),0) scale('+q.s+') rotate('+q.r+'deg)';vehicles[i].style.opacity=q.o;vehicles[i].style.zIndex=30-Math.round(Math.abs(i-p)*3);dots[i].classList.toggle('on',i===active)})}
+function go(target){cancelAnimationFrame(raf);const from=p,to=clamp(target,0,max),t0=performance.now(),dur=760;function step(now){const t=clamp((now-t0)/dur,0,1),e=1-Math.pow(1-t,4);p=mix(from,to,e);render();if(t<1)raf=requestAnimationFrame(step)}raf=requestAnimationFrame(step)}
+stage.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;if(e.button!==undefined&&e.button!==0)return;cancelAnimationFrame(raf);stage.setPointerCapture(e.pointerId);drag=true;stage.classList.add('dragging');dragLabel.textContent='Release';startX=lastX=e.clientX;startP=p;lastT=performance.now();vel=0;e.preventDefault()});
+stage.addEventListener('pointermove',e=>{if(!drag)return;const width=Math.max(stage.clientWidth*.58,340),now=performance.now(),dt=Math.max(1,now-lastT);p=clamp(startP-(e.clientX-startX)/width,0,max);vel=(e.clientX-lastX)/dt;lastX=e.clientX;lastT=now;render();e.preventDefault()});
+function release(e){if(!drag)return;drag=false;stage.classList.remove('dragging');dragLabel.textContent='Drag';if(e&&stage.hasPointerCapture(e.pointerId))stage.releasePointerCapture(e.pointerId);const projected=p+(inertia?-vel*.82:0);go(Math.round(clamp(projected,0,max)))}
+stage.addEventListener('pointerup',release);stage.addEventListener('pointercancel',release);window.addEventListener('blur',()=>{if(drag)release()});
+document.getElementById('prev').onclick=()=>go(Math.round(p)-1);document.getElementById('next').onclick=()=>go(Math.round(p)+1);document.getElementById('reset').onclick=()=>go(0);document.getElementById('inertia').onclick=e=>{inertia=!inertia;e.currentTarget.classList.toggle('on',inertia)};document.getElementById('parallax').onclick=e=>{parallax=!parallax;e.currentTarget.classList.toggle('on',parallax);render()};render();
+</script>
+</body></html>
