@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COCHES — Motion Lab V0.5</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#e9e9e4;color:#111}.app{height:100vh;padding:16px}.stage{position:relative;height:calc(100vh - 112px);overflow:hidden;background:#f7f7f3;cursor:grab;touch-action:none;user-select:none}.stage.is-dragging{cursor:grabbing}.brand{position:absolute;top:24px;left:28px;z-index:90;font-size:11px;letter-spacing:.17em}.status{position:absolute;top:24px;right:28px;z-index:90;font-size:10px;letter-spacing:.08em;text-transform:uppercase}.status.ok{color:#16833d}.status.bad{color:#b00020}.scene-mark{position:absolute;left:50%;top:49%;translate:-50% -50%;font-size:min(42vw,560px);line-height:.75;color:#0000000c;z-index:1;pointer-events:none}.copy{position:absolute;left:5vw;top:12vh;z-index:70;width:290px;opacity:0;pointer-events:none}.copy[data-index="0"]{opacity:1}.copy span{font-size:10px;letter-spacing:.12em;text-transform:uppercase}.copy h1{margin:12px 0 8px;font-size:clamp(28px,3vw,48px);font-weight:500;letter-spacing:-.045em}.copy p{margin:0;font-size:12px;line-height:1.5;color:#666}.vehicle{position:absolute;left:50%;top:54%;width:min(48vw,760px);translate:-50% -50%;z-index:30;will-change:transform,opacity;pointer-events:none;opacity:0}.vehicle[data-index="0"]{opacity:1}.vehicle img{display:block;width:100%;height:auto;max-height:64vh;object-fit:contain;box-shadow:0 24px 55px rgba(0,0,0,.12)}.vehicle .tag{position:absolute;left:50%;bottom:-20px;translate:-50%;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#777;white-space:nowrap}.drag{position:absolute;left:50%;top:78%;translate:-50% -50%;z-index:85;width:70px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:#111;color:#fff;font-size:10px;pointer-events:none}.pager{position:absolute;bottom:24px;left:50%;translate:-50%;display:flex;gap:8px;z-index:85}.pager button{width:24px;height:2px;padding:0;border:0;background:#0002;cursor:pointer}.pager button.on{background:#111}.panel{height:80px;display:flex;align-items:center;justify-content:space-between;gap:20px}.read{font-size:10px;text-transform:uppercase;letter-spacing:.08em}.read strong{display:block;margin-top:4px;font-size:22px;font-weight:500}.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.actions button{padding:8px 10px;border:1px solid #bbb;background:transparent;font-size:10px;text-transform:uppercase;cursor:pointer}.actions button.on{background:#111;color:#fff;border-color:#111}@media(max-width:760px){.app{padding:8px}.stage{height:calc(100vh - 134px)}.copy{top:7vh;left:20px;width:72vw}.copy p{display:none}.vehicle{width:88vw;top:57%}.scene-mark{font-size:80vw}.drag{top:82%;width:56px}.status{display:none}.panel{align-items:flex-start;padding-top:8px}.actions{max-width:72%}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="stage" id="stage" aria-label="Interactive car motion lab">
+    <div class="brand"><b>COCHES</b> / MOTION LAB 05</div>
+    <div class="status" id="status">JS waiting</div>
+    <div class="scene-mark" id="sceneMark">01</div>
+    <div class="copy" data-index="0"><span>Blue crossover</span><h1>Reference 01</h1><p>Supplied reference · choreography state 1 of 6.</p></div>
+    <div class="copy" data-index="1"><span>Red performance</span><h1>Reference 02</h1><p>Supplied reference · choreography state 2 of 6.</p></div>
+    <div class="copy" data-index="2"><span>White SUV</span><h1>Reference 03</h1><p>Supplied reference · choreography state 3 of 6.</p></div>
+    <div class="copy" data-index="3"><span>Angular utility</span><h1>Reference 04</h1><p>Supplied reference · choreography state 4 of 6.</p></div>
+    <div class="copy" data-index="4"><span>White roadster</span><h1>Reference 05</h1><p>Supplied reference · choreography state 5 of 6.</p></div>
+    <div class="copy" data-index="5"><span>Black saloon</span><h1>Reference 06</h1><p>Supplied reference · choreography state 6 of 6.</p></div>
+    <article class="vehicle" data-index="0"><img src="../public/assets/cars/car-01.webp" alt="Blue crossover reference"><span class="tag">Reference 01</span></article>
+    <article class="vehicle" data-index="1"><img src="../public/assets/cars/car-02.webp" alt="Red performance reference"><span class="tag">Reference 02</span></article>
+    <article class="vehicle" data-index="2"><img src="../public/assets/cars/car-03.webp" alt="White SUV reference"><span class="tag">Reference 03</span></article>
+    <article class="vehicle" data-index="3"><img src="../public/assets/cars/car-04.webp" alt="Angular utility reference"><span class="tag">Reference 04</span></article>
+    <article class="vehicle" data-index="4"><img src="../public/assets/cars/car-05.webp" alt="White roadster reference"><span class="tag">Reference 05</span></article>
+    <article class="vehicle" data-index="5"><img src="../public/assets/cars/car-06.webp" alt="Black saloon reference"><span class="tag">Reference 06</span></article>
+    <div class="drag" id="dragLabel">Drag</div>
+    <nav class="pager" id="pager" aria-label="Carousel pages"><button class="on" data-go="0" aria-label="Reference 01"></button><button data-go="1" aria-label="Reference 02"></button><button data-go="2" aria-label="Reference 03"></button><button data-go="3" aria-label="Reference 04"></button><button data-go="4" aria-label="Reference 05"></button><button data-go="5" aria-label="Reference 06"></button></nav>
+  </section>
+  <div class="panel"><div class="read">progress<strong id="read">0.000 / 5</strong></div><div class="actions"><button id="prev">Previous</button><button id="next">Next</button><button id="inertia" class="on">Inertia</button><button id="parallax" class="on">Parallax</button><button id="reset">Reset</button></div></div>
+</div>
+<noscript>JavaScript is disabled. The supplied vehicle images should still be visible, but interactive motion requires JavaScript.</noscript>
+<script src="motion-v05.js" defer></script>
+</body>
+</html>

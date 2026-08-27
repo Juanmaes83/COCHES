@@ -1,0 +1,242 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #111;
+  background: #e9e9e4;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-width: 320px; min-height: 100%; }
+button { font: inherit; }
+
+.app-shell {
+  min-height: 100vh;
+  background: #e9e9e4;
+  padding: 18px;
+}
+
+.stage {
+  position: relative;
+  min-height: calc(100vh - 132px);
+  overflow: hidden;
+  background: #f7f7f3;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+}
+.stage.is-dragging { cursor: grabbing; }
+
+.brand {
+  position: absolute;
+  top: 26px;
+  left: 28px;
+  z-index: 30;
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.giant-mark {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform-origin: center;
+  translate: -50% -54%;
+  z-index: 1;
+  font-size: min(52vw, 680px);
+  line-height: .74;
+  font-weight: 500;
+  letter-spacing: -.08em;
+  color: rgba(17,17,17,.055);
+  transition: color .2s ease;
+  pointer-events: none;
+}
+
+.copy-block {
+  position: absolute;
+  top: 13vh;
+  left: 6vw;
+  width: min(310px, 33vw);
+  z-index: 28;
+  animation: copyIn .45s both;
+}
+.copy-block span,
+.vehicle-tag,
+.lab-kicker {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.copy-block h1 {
+  margin: 14px 0 10px;
+  font-size: clamp(28px, 3.1vw, 52px);
+  line-height: .96;
+  font-weight: 500;
+  letter-spacing: -.045em;
+}
+.copy-block p {
+  max-width: 280px;
+  margin: 0 0 22px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(17,17,17,.62);
+}
+.copy-block button {
+  border: 1px solid #111;
+  background: transparent;
+  padding: 11px 16px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.vehicle-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.vehicle {
+  position: absolute;
+  left: 50%;
+  top: 51%;
+  width: min(48vw, 720px);
+  aspect-ratio: 2.45 / 1;
+  transform-origin: center;
+  translate: -50% -50%;
+  transition: opacity .08s linear;
+  will-change: transform, opacity;
+}
+
+.car-shell {
+  position: absolute;
+  inset: 18% 5% 10%;
+  filter: drop-shadow(0 24px 18px rgba(0,0,0,.12));
+}
+.car-body {
+  position: absolute;
+  left: 3%; right: 3%; bottom: 18%;
+  height: 38%;
+  border-radius: 48% 22% 16% 18% / 36% 42% 28% 25%;
+  background: linear-gradient(180deg, #6b6d6f, #252728 62%, #171819);
+}
+.car-roof {
+  position: absolute;
+  left: 24%;
+  right: 28%;
+  bottom: 49%;
+  height: 30%;
+  clip-path: polygon(17% 100%, 37% 7%, 70% 0, 100% 100%);
+  background: linear-gradient(140deg, #707477, #25292c 48%, #474b4e);
+}
+.wheel {
+  position: absolute;
+  bottom: 7%;
+  width: 16%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #b7b9ba 0 12%, #2e3031 13% 35%, #0d0e0e 36% 67%, #292b2c 68%);
+  border: 2px solid #111;
+}
+.wheel-a { left: 15%; }
+.wheel-b { right: 14%; }
+.vehicle-tag {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  translate: -50%;
+  opacity: .46;
+}
+
+.drag-cursor {
+  position: absolute;
+  left: 50%;
+  top: 72%;
+  z-index: 35;
+  width: 64px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  translate: -50% -50%;
+  background: #111;
+  color: white;
+  font-size: 10px;
+  pointer-events: none;
+  transition: scale .2s ease;
+}
+.stage.is-dragging .drag-cursor { scale: .88; }
+
+.pagination {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  z-index: 32;
+  translate: -50%;
+  display: flex;
+  gap: 9px;
+}
+.pagination button {
+  width: 24px;
+  height: 2px;
+  border: 0;
+  padding: 0;
+  background: rgba(17,17,17,.18);
+  cursor: pointer;
+}
+.pagination button.active { background: #111; }
+
+.lab-panel {
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 4px 0;
+}
+.lab-panel > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.lab-panel strong {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
+.lab-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+.lab-actions button {
+  border: 1px solid rgba(17,17,17,.2);
+  background: transparent;
+  padding: 8px 11px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+.lab-actions button.enabled {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+@keyframes copyIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 760px) {
+  .app-shell { padding: 8px; }
+  .stage { min-height: calc(100vh - 150px); }
+  .copy-block { top: 9vh; left: 22px; width: 72vw; }
+  .copy-block p { display: none; }
+  .vehicle { width: 82vw; top: 56%; }
+  .giant-mark { font-size: 92vw; }
+  .drag-cursor { top: 76%; width: 54px; }
+  .lab-panel { align-items: flex-start; }
+  .lab-actions { max-width: 66%; }
+}
